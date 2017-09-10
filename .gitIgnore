@@ -1,4 +1,4 @@
-generatedClasses/
-sourceJson/
+generatedClasses/*
+sourceJson/*
 node_modules/
-
+!*.gitkeep
