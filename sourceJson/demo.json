@@ -1,0 +1,32 @@
+{
+  "id": 1,
+  "normal": {
+    "attire": {
+      "shirt": "black",
+      "pants": "blue"
+    },
+    "pets": {
+      "dog": {
+      	"name": "Smeagle",
+      	"breed": "Beagle"
+      }
+    },
+    "firstName": "Joe",
+    "lastName": "Shmoe"
+  },
+  "hero": {
+    "attire": {
+      "shirt": "red",
+      "pants": "blue",
+      "cape": "white"
+    },
+    "pets": {
+      "dog": {
+      	"name": "Super Dog",
+      	"breed": "Krpyton"
+      }
+    },
+    "firstName": "Superman",
+    "lastName": "none"
+  }
+}
