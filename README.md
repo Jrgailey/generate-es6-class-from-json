@@ -18,7 +18,9 @@ The command line takes 2 arguments.
 1) **--class-name** or **c**: The name that you want the generated class to be called
 2) **--source-file** or **-s** : The name of the source file in the *sourceJson* directory
 
+
+#### Run this script for a demo, and checkout the files generated
 > Example:
 >```javascript
-> node index.js --class-name CustomerHubClass -s test
+> node index.js --class-name superHero -s demo
 

@@ -12,18 +12,28 @@ const optionDefinitions = [
 ];
 
 const options = commandLineArgs(optionDefinitions)
-
 const src = options['source-file'];
 const className = options['class-name'];
+const camelClassName = _.camelCase(options['class-name']);
 const dest = dir+'/' + className + '.js';
+const testFile = dir+'/' + className + '-test.js';
+const jsonFile = require('./sourceJson/' + src+'.json');
 
-//const jsonFile = JSON.parse(require('fs').readFileSync('src/' + src+'.json', 'utf8'));
-
-
-const jsonFile = require('./src/' + src+'.json');
 let props = "",
-propDocs = "", 
-constDoc;
+propDocs = "",
+itStatement = "", 
+constDoc,
+testBegin,
+testEnd,
+importStr = 'import';
+
+function populateTest(key) {
+	itStatement += 
+	`it('should populate the ${key})', () => {
+	   expect(${camelClassName}.${key}).to.eql(data.${key});
+	});
+	`;
+}
 
 function populateProps(obj, originalMapping) {
 	Object.keys(obj).forEach(function(key) {
@@ -32,26 +42,23 @@ function populateProps(obj, originalMapping) {
 		populateProps(obj[key], srcKey);
 	 } else {
 		let type = typeof key;
-		props += '\n \t this.'+key + ' = data.' + srcKey+ ';';
+		populateTest(key);
+		props += '\n \t this.'+srcKey + ' = data.' + srcKey+ ';';
 		propDocs += '\n   *  {' + _.capitalize(type) + '} ' + key + ' - ';
 		}
 	});
 }
 
 populateProps(jsonFile);
-constDoc = 
-`
-/**
+
+let content = 
+`Class ${_.upperFirst(className)} {
+ /**
    * @name constructor
    * @description - Constructs a ${className} object based on the data passed in containing the following:
    ${propDocs}
    * @param {Object} data - The passed in data from services
    */
-`
-
-let content = 
-`Class ${className} {
-	${constDoc}
 	constructor(data) {
 `
 
@@ -59,13 +66,36 @@ content +=
 `${props}
 
 }
+export { ${className} };`;
 
-export { ${className} };`
-
+testContent = 
+`import {expect} from '../../../helper'
+import {${className}} from '../../../../lib/common/classes/${className}'
+import {${className}Mock} from '../../../mocks/${className}Mock'
+describe(${className} Class, function () {
+  describe('when a ${className} object is created from data', () => {
+	const data = ${className}Mock;
+    let ${camelClassName};
+    beforeEach(() => {
+      ${camelClassName} = new ${className}(data);
+    });
+    ${itStatement}
+  });
+});
+`
+//write Class.js
 fs.writeFile(dest, content, function(error) {
      if (error) {
        console.error("write error:  " + error.message);
      } else {
        console.log("Successful Write to " + dest);
+     }
+});
+//write test.js
+fs.writeFile(testFile, testContent, function(error) {
+     if (error) {
+       console.error("write error:  " + error.message);
+     } else {
+       console.log("Successful Write to " + testContent);
      }
 });

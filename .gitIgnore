@@ -2,3 +2,4 @@ generatedClasses/*
 sourceJson/*
 node_modules/
 !*.gitkeep
+!*demo.json
