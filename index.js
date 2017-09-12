@@ -29,10 +29,10 @@ importStr = 'import';
 
 function populateTest(key) {
 	itStatement += 
-	`it('should populate the ${key})', () => {
-	   expect(${camelClassName}.${key}).to.eql(data.${key});
-	});
-	`;
+	`
+    it('should populate the ${key}', () => {
+	  expect(${camelClassName}.${key}).to.eql(data.${key});
+    });`;
 }
 
 function populateProps(obj, originalMapping) {
@@ -52,7 +52,7 @@ function populateProps(obj, originalMapping) {
 populateProps(jsonFile);
 
 let content = 
-`Class ${_.upperFirst(className)} {
+`class ${_.upperFirst(className)} {
  /**
    * @name constructor
    * @description - Constructs a ${className} object based on the data passed in containing the following:
@@ -65,19 +65,20 @@ let content =
 content += 
 `${props}
 
+ }
 }
-export { ${className} };`;
+export {${_.upperFirst(className)}};`;
 
 testContent = 
 `import {expect} from '../../../helper'
-import {${className}} from '../../../../lib/common/classes/${className}'
+import {${_.upperFirst(className)}} from '../../../../lib/common/classes/${className}'
 import {${className}Mock} from '../../../mocks/${className}Mock'
-describe(${className} Class, function () {
+describe(' ${_.upperFirst(className)} Class', function () {
   describe('when a ${className} object is created from data', () => {
 	const data = ${className}Mock;
     let ${camelClassName};
     beforeEach(() => {
-      ${camelClassName} = new ${className}(data);
+      ${camelClassName} = new ${_.upperFirst(className)}(data);
     });
     ${itStatement}
   });
