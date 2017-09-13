@@ -42,7 +42,7 @@ function populateProps(obj, originalMapping) {
 		populateProps(obj[key], srcKey);
 	 } else {
 		let type = typeof key;
-		populateTest(key);
+		populateTest(srcKey);
 		props += '\n \t this.'+srcKey + ' = data.' + srcKey+ ';';
 		propDocs += '\n   *  {' + _.capitalize(type) + '} ' + key + ' - ';
 		}
@@ -73,7 +73,7 @@ testContent =
 `import {expect} from '../../../helper'
 import {${_.upperFirst(className)}} from '../../../../lib/common/classes/${className}'
 import {${className}Mock} from '../../../mocks/${className}Mock'
-describe(' ${_.upperFirst(className)} Class', function () {
+describe('${_.upperFirst(className)} Class', function () {
   describe('when a ${className} object is created from data', () => {
 	const data = ${className}Mock;
     let ${camelClassName};
