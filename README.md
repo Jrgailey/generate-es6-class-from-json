@@ -15,9 +15,10 @@
 	node index.js
 ```
 > 
-The command line takes 2 arguments.
-1) **--class-name** or **c**: The name that you want the generated class to be called
+The command line takes 3 arguments.
+1) **--class-name** or **n**: The name that you want the generated class to be called
 2) **--source-file** or **-s** : The name of the source file in the *sourceJson* directory
+3) **--add-semicolon** or **c**: If you want to end lines with semicolons (default is false)
 
 **IMPORTANT**
 Do NOT put the file extension of your json file, just put your file in the 

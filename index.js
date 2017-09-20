@@ -8,11 +8,13 @@ if (!fs.existsSync(dir)){
 
 const optionDefinitions = [
   { name: 'source-file', alias: 's', type: String },
-  { name: 'class-name', alias: 'n', type: String }
+  { name: 'class-name', alias: 'n', type: String },
+  { name: 'add-semicolon', alias: 'c', type: Boolean}
 ];
 
 const options = commandLineArgs(optionDefinitions)
 const src = options['source-file'];
+const semiColon = options['add-semicolon'] ? ';' : '';
 const className = options['class-name'];
 const camelClassName = _.camelCase(options['class-name']);
 const dest = dir+'/' + className + '.js';
@@ -22,6 +24,7 @@ const jsonFile = require('./sourceJson/' + src+'.json');
 let props = "",
 propDocs = "",
 itStatement = "", 
+emptyObjItStatement = "",
 constDoc,
 testBegin,
 testEnd,
@@ -31,8 +34,14 @@ function populateTest(key) {
 	itStatement += 
 	`
     it('should populate the ${key}', () => {
-	  expect(${camelClassName}.${key}).to.eql(data.${key});
-    });`;
+	  expect(${camelClassName}.${key}).to.eql(data.${key})${semiColon}
+    })${semiColon}`;
+    
+    emptyObjItStatement += 
+	`
+    it('should populate the ${key} as undefined', () => {
+	  expect(${camelClassName}.${key}).to.eql(undefined)${semiColon}
+    })${semiColon}`;
 }
 
 function populateProps(obj, originalMapping) {
@@ -43,7 +52,7 @@ function populateProps(obj, originalMapping) {
 	 } else {
 		let type = typeof key;
 		populateTest(srcKey);
-		props += '\n \t this.'+srcKey + ' = data.' + srcKey+ ';';
+		props += '\n \t this.'+srcKey + ' = data.' + srcKey+ semiColon;
 		propDocs += '\n   *  {' + _.capitalize(type) + '} ' + key + ' - ';
 		}
 	});
@@ -59,7 +68,7 @@ let content =
    ${propDocs}
    * @param {Object} data - The passed in data from services
    */
-	constructor(data) {
+	constructor(data = {}) {
 `
 
 content += 
@@ -67,22 +76,29 @@ content +=
 
  }
 }
-export {${_.upperFirst(className)}};`;
+export {${_.upperFirst(className)}}${semiColon}`;
 
 testContent = 
-`import {expect} from '../../../helper'
-import {${_.upperFirst(className)}} from '../../../../lib/common/classes/${className}'
-import {${className}Mock} from '../../../mocks/${className}Mock'
+`import {expect} from '../../helper'${semiColon}
+import {${_.upperFirst(className)}} from '../../../lib/common/classes/${className}/${className}'${semiColon}
+import {${className}Mock} from '../../mocks/${className}Mock'${semiColon}
 describe('${_.upperFirst(className)} Class', function () {
   describe('when a ${className} object is created from data', () => {
-	const data = ${className}Mock;
-    let ${camelClassName};
+	const data = ${className}Mock${semiColon}
+    let ${camelClassName}${semiColon}
     beforeEach(() => {
-      ${camelClassName} = new ${_.upperFirst(className)}(data);
-    });
+      ${camelClassName} = new ${_.upperFirst(className)}(data)${semiColon}
+    })${semiColon}
     ${itStatement}
-  });
-});
+  })${semiColon}
+  describe('when a ${className} object is created from nothing', () => {
+    let ${camelClassName}${semiColon}
+    beforeEach(() => {
+      ${camelClassName} = new ${_.upperFirst(className)}()${semiColon}
+    })${semiColon}
+    ${emptyObjItStatement}
+  })${semiColon}
+})${semiColon}
 `
 //write Class.js
 fs.writeFile(dest, content, function(error) {
