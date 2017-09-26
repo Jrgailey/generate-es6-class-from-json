@@ -52,7 +52,7 @@ function populateProps(obj, originalMapping) {
 	 } else {
 		let type = typeof key;
 		populateTest(srcKey);
-		props += '\n \t this.'+srcKey + ' = data.' + srcKey+ semiColon;
+		props += '\n \t  this.'+srcKey + ' = data.' + srcKey+ semiColon;
 		propDocs += '\n   *  {' + _.capitalize(type) + '} ' + key + ' - ';
 		}
 	});
@@ -62,7 +62,7 @@ populateProps(jsonFile);
 
 let content = 
 `class ${_.upperFirst(className)} {
- /**
+  /**
    * @name constructor
    * @description - Constructs a ${className} object based on the data passed in containing the following:
    ${propDocs}
