@@ -29,5 +29,5 @@ Do NOT put the file extension of your json file, just put your file in the
 #### Run this script for a demo, and checkout the files generated
 > Example:
 >```javascript
-> node index.js --class-name superHero -s demo
+> node index.js -s source --class-name superHero
 

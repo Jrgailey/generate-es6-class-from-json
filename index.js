@@ -34,13 +34,13 @@ function populateTest(key) {
 	itStatement += 
 	`
     it('should populate the ${key}', () => {
-	  expect(${camelClassName}.${key}).to.eql(data.${key})${semiColon}
+      expect(${camelClassName}.${key}).to.eql(data.${key})${semiColon}
     })${semiColon}`;
     
     emptyObjItStatement += 
 	`
     it('should populate the ${key} as undefined', () => {
-	  expect(${camelClassName}.${key}).to.eql(undefined)${semiColon}
+      expect(${camelClassName}.${key}).to.eql(undefined)${semiColon}
     })${semiColon}`;
 }
 
@@ -74,7 +74,7 @@ let content =
 content += 
 `${props}
 
- }
+  }
 }
 export {${_.upperFirst(className)}}${semiColon}`;
 
